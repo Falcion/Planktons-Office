@@ -1,5 +1,5 @@
-# GITCONFIG of CSHARP project.
-
+# GITCONFIG
+#
 # Aliases
 [alias]
     # Display every of aliases inside the Git configuration
