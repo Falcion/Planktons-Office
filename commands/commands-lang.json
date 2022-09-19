@@ -1,0 +1,26 @@
+{
+    "init-apply": {
+        "ru_RU": [
+            "Создаёт специальный канал как билетик, где вы можете начать писать свою заявку"
+        ],
+        "en_US": [
+            "Creates a specified channel as ticket where you can start writing an application"
+        ]
+    },
+    "send-apply": {
+        "ru_RU": [
+            ""
+        ],
+        "en_US": [
+            ""
+        ]
+    },
+    "intro-apply": {
+        "ru_RU": [
+            ""
+        ],
+        "en_US": [
+            "Be ensure that you have started an application sending procedure that exceeds at ten minutes and no more: for addition information, press the buttons below."
+        ]
+    }
+}

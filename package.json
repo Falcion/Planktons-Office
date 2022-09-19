@@ -4,7 +4,8 @@
   "description": "A self-written bot based on Discord API written with JS framework for a quite popular GD streamer",
   "main": "index.js",
   "scripts": {
-    "deploy-cmd": "node deploy-commands.js"
+    "inst": "node index.js",
+    "deploy-cmd": "node deploy-command.js"
   },
   "author": "Falcion",
   "license": "MIT",

@@ -9,7 +9,15 @@
 *.user
 *.userosscache
 *.sln.docstates
+
+# Environment-specific files
+
 *.env*
+*.json*
+
+# Languages-specified configurations
+
+!*-lang.*
 
 # ESLint
 
