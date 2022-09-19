@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, PermissionFlagsBits, Colors } = require('discord.js');
 
 const fs = require('fs-extra');
 
 const configuration = require('./../.env.json'); 
-const commands_lang = require('./commands-lang.json');
+const commands_lang = require('./../commands-lang.json');
 
 const TEXT_CHANNEL = ChannelType.GuildText;
 const BUTTON_STYLE = ButtonStyle.Danger;
@@ -13,7 +13,7 @@ var delay = ms => new Promise(res => setTimeout(res, ms));
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('init-apply')
+        .setName('application')
         .setDMPermission(false)
         .setDescriptionLocalization('ru', commands_lang['INIT_APPLY']['ru_RU'][0])
         .setDescriptionLocalization('en-US', commands_lang['INIT_APPLY']['en_US'][0])
@@ -22,13 +22,14 @@ module.exports = {
     async execute(interaction) {
         await interaction.reply('Bot has created a specified ticket and mentioned you! Read specified context for application procedure.');
 
-        const hashes = crc32(interaction.user.id);
+        const hashes_id = crc32(interaction.user.id);
+        const tckt_name = 'app-' + `${hashes_id}`;
 
         const parent_ids = interaction.channel.parent.id,
               default_id = interaction.guild.roles.everyone.id;
 
         await interaction.guild.channels.create({
-            name: hashes,
+            name: tckt_name,
             type: TEXT_CHANNEL,
             parent: parent_ids,
             position: 1,
@@ -116,41 +117,78 @@ module.exports = {
                                 console.error(error);
                              });
                 }
-                    
+
+                const undefined_array = [];
+
+                for(const_context of data) {
+                    const content = const_context.content;
+
+                    undefined_array.push(content);
+                }
+
+                const merged_array = undefined_array.join('\n');
+
+                if(undefined_array.length >= 2000) {
+                    const author = interaction.user;
+
+                    await author.send({ content: commands_lang['ERROR_OVERFLOW']['en_US'][0]});
+
+                    await delay(20000);
+
+                    await res.delete()
+                             .then(() => {
+                                console.info(new Date().toLocaleString() + ' - A custom ticket was deleted because of overflow of chars problem!');
+                             })
+                             .catch(error => { 
+                                console.error(error); 
+                             });
+                }
                 
                 const ADMINS_CHANNEL_ID = configuration['ADMINS_CHANNEL_ID'];
 
                 interaction.guild.channels.fetch(`${ADMINS_CHANNEL_ID}`)
-                .then(async adm_res => {
-                    const append_data = []
-
-                    for(chunk of data) {
-                        const content = chunk.content;
-
-                        append_data.push(content);
-                    }
-
-                    const merged_data = append_data.join('\n');
+                .then(async admin_stream => {   
+                    const embed_stream = undefined;
 
                     /*
-                     * Checking on max size of message that have been declared by APIs restrictions
-                     * If bigger than MAX, sending information about it to user and after pause,
-                     * delete the required ticket within returning undefined (just stops function).
+                     * Non-prettified constructor of embed message: unreadable without normal formatting.
                      */
 
-                    if(merged_data.length >= 2000) {
-                        const author = interaction.user;
-
-                        await author.send({ content: commands_lang['ERROR_OVERFLOW']['en_US'][0]});
-
-                        delay(20000);
-
-                        await res.delete();
-
-                        return;
-                    }
-
-
+                    embed_stream = new EmbedBuilder().setTitle('Application had been handled!').setDescription().setFooter({ text: 'Event handling message: system-purposes only.' }).setColor(Colors.Yellow).setFields([{ name: 'APPLICATION\'s AUTHOR:', value: `<@${interaction.user.id}>`, inline: false, }, { name: 'APPLICATION\'s ID:', value: `${hashes_id}`, inline: false }]).setTimestamp();                        
+                    
+                    await admin_stream.send({ contents: merged_array })
+                                      .then(application => {
+                                        application.reply({ content: '', embeds: [embed_stream]})
+                                                   .then(async addition => {
+                                                    await adm_msg.react('✅');
+                                                    await adm_msg.react('❎');
+                
+                                                    const applies_order = require('./../applies-order.json');
+                                                    
+                                                    const apply_objects = {
+                                                        'ADMINS_MESSAGE_ID': application.id,
+                                                        'ADMIN_ADDITION_ID': addition.id,
+                                                    };
+                
+                                                    applies_order.push(apply_objects);
+                
+                                                    const applies_pattern = JSON.stringify(applies_order, undefined, 4);
+                
+                                                    await fs.writeFile('applies-order.json', applies_pattern)
+                                                            .then(() => {
+                                                                console.info(new Date().toLocaleString() + ' - Written an unchecked application\'s ID in specified JSON!');
+                                                            })
+                                                            .catch(error => {
+                                                                console.error(error);
+                                                            });
+                                                   })
+                                                   .catch(error => {
+                                                       console.error(error);
+                                                   });
+                                      })
+                                      .catch(error => {
+                                          console.error(error);
+                                      });
                 })
                 .catch(error => {
                     console.error(error);
