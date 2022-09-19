@@ -1,0 +1,21 @@
+									await adm_msg.react('✅');
+                                    await adm_msg.react('❎');
+
+                                    const applies_order = require('./../applies-order.json');
+                                    
+                                    const apply_objects = {
+                                        'ADMINS_MESSAGE_ID': adm_msg.id,
+                                        'ADMIN_ADDITION_ID': adm_msg.id,
+                                    };
+
+                                    applies_order.push(apply_objects);
+
+                                    const applies_pattern = JSON.stringify(applies_order, undefined, 4);
+
+                                    await fs.writeFile('applies-order.json', applies_pattern)
+                                            .then(() => {
+                                                console.info(new Date().toLocaleString() + ' - Written an unchecked application\'s ID in specified JSON!');
+                                            })
+                                            .catch(error => {
+                                                console.error(error);
+                                            });

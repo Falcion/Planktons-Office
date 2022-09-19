@@ -15,9 +15,9 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('init-apply')
         .setDMPermission(false)
-        .setDescriptionLocalization('ru', commands_lang['init-apply']['ru_RU'][0])
-        .setDescriptionLocalization('en-US', commands_lang['init-apply']['en_US'][0])
-        .setDescriptionLocalization('en-GB', commands_lang['init-apply']['en_US'][0]),
+        .setDescriptionLocalization('ru', commands_lang['INIT_APPLY']['ru_RU'][0])
+        .setDescriptionLocalization('en-US', commands_lang['INIT_APPLY']['en_US'][0])
+        .setDescriptionLocalization('en-GB', commands_lang['INIT_APPLY']['en_US'][0]),
 
     async execute(interaction) {
         await interaction.reply('Bot has created a specified ticket and mentioned you! Read specified context for application procedure.');
@@ -67,7 +67,7 @@ module.exports = {
 
             const message_cst = [
                 '',
-                commands_lang['intro-apply']['en_US'][0],
+                commands_lang['INTRO_APPLY']['en_US'][0],
                 '',
                 `— <@${interaction.user.id}>`,
                 '** **',
@@ -123,41 +123,34 @@ module.exports = {
                 interaction.guild.channels.fetch(`${ADMINS_CHANNEL_ID}`)
                 .then(async adm_res => {
                     const append_data = []
-                    const parsed_data = data[0];
 
-                    data.forEach(chunk => {
+                    for(chunk of data) {
                         const content = chunk.content;
 
                         append_data.push(content);
-                    });
+                    }
 
-                    await adm_res.send({ content: append_data.join('\n')})
-                                 .then(async adm_msg => {
-                                    await adm_msg.react('✅');
-                                    await adm_msg.react('❎');
+                    const merged_data = append_data.join('\n');
 
-                                    const applies_order = require('./../applies-order.json');
-                                    
-                                    const apply_objects = {
-                                        'ADMINS_MESSAGE_ID': adm_msg.id,
-                                        'ADMIN_ADDITION_ID': adm_msg.id,
-                                    };
+                    /*
+                     * Checking on max size of message that have been declared by APIs restrictions
+                     * If bigger than MAX, sending information about it to user and after pause,
+                     * delete the required ticket within returning undefined (just stops function).
+                     */
 
-                                    applies_order.push(apply_objects);
+                    if(merged_data.length >= 2000) {
+                        const author = interaction.user;
 
-                                    const applies_pattern = JSON.stringify(applies_order, undefined, 4);
+                        await author.send({ content: commands_lang['ERROR_OVERFLOW']['en_US'][0]});
 
-                                    await fs.writeFile('applies-order.json', applies_pattern)
-                                            .then(() => {
-                                                console.info(new Date().toLocaleString() + ' - Written an unchecked application\'s ID in specified JSON!');
-                                            })
-                                            .catch(error => {
-                                                console.error(error);
-                                            })
-                                 })
-                                 .catch(error => {
-                                    console.error(error);
-                                 });
+                        delay(20000);
+
+                        await res.delete();
+
+                        return;
+                    }
+
+
                 })
                 .catch(error => {
                     console.error(error);
