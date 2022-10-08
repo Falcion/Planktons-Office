@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"declaration": false,
+		"removeComments": false,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "es6",
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"incremental": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"strict": true,
+		"sourceMap": false
+	},
+	"exclude": ["node_modules", "dist"]
+}

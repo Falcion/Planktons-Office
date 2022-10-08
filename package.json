@@ -1,0 +1,33 @@
+{
+  "name": "planktons-office",
+  "version": "1.0.0",
+  "description": "A self-written bot based on Discord API with TS superset for a quite popular streamer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "deploy-cmd": "node dist/deploy-commands.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Falcion/Planktons-Office.git"
+  },
+  "author": "Falcion",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Falcion/Planktons-Office/issues"
+  },
+  "homepage": "https://github.com/Falcion/Planktons-Office#readme",
+  "dependencies": {
+    "@discordjs/rest": "^1.2.0",
+    "@types/fs-extra": "^9.0.13",
+    "crc": "^4.1.1",
+    "discord.js": "^14.4.0",
+    "dotenv": "^16.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "fs-extra": "^10.1.0",
+    "prettier": "2.7.1",
+    "typescript": "^3.9.10"
+  }
+}

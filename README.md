@@ -1,0 +1,1 @@
+"**Some rules about submissions.**\n** **\n**1.** You are limited to a timer of five minutes: no more, no less.\n**2.** You are limited to the number of characters allowed by the Discord API, which is 2000 characters.\n** **\n Rules will evolve and change over time: show respect and patience!"
