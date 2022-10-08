@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 # User-specific files
+*.json
 *.rsuser
 *.suo
 *.user
@@ -17,7 +18,8 @@
 
 # Languages-specified configurations
 
-!*-lang.*
+!*locales*
+!*lang.*
 
 # ESLint
 
@@ -71,7 +73,7 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 # Default VS doesn't include a package-lock.json (which is strange but OK)
-project-lock.json
+package-lock.json
 project.fragment.lock.json
 artifacts/
 
