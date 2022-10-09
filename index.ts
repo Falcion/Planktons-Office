@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials, Collection, TextChannel, EmbedBuilder, Colors } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Collection, TextChannel, EmbedBuilder, Colors, GuildTextBasedChannel, GuildBasedChannel, Message, Guild } from 'discord.js';
 import fs from 'fs-extra';
 import path from 'node:path';
 
@@ -6,8 +6,13 @@ const CHANNELS_IDS = JSON.parse(fs.readFileSync('./app-settings.json').toString(
 
 import dotenv from 'dotenv';
 
-//@ts-ignore-error
-var delay = ms => new Promise(res => setTimeout(res, ms));
+declare module "discord.js" {
+    export interface Client {
+      commands: Collection<unknown, any>
+    }
+}
+
+var delay = (ms: number | undefined) => new Promise(res => setTimeout(res, ms));
 
 if(fs.pathExistsSync('.env') == false) {
     fs.createFileSync('.env');
@@ -50,7 +55,6 @@ const client = new Client({
         GatewayIntentBits.MessageContent
 ]});
 
-//@ts-ignore-error
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
@@ -62,20 +66,36 @@ for(let i = 0; i < commandFiles.length; i++) {
 
     const command = require(filePath);
 
-    //@ts-ignore-error
     client.commands.set(command.data.name, command);
 }
 
 client.once('ready', () => {
     client.user?.setPresence({
         activities: [{
-            name: 'API',
+            name: 'IN-DEV',
+            //name: 'API',
             type: 5
         }],
         status: 'dnd',
     });
 
-    console.log('Bot is ready!');
+    console.log(new Date().toLocaleString() + ' - Bot is ready!');
+
+    try {
+        client.guilds.fetch(`${process.env.GUILD_ID}`).then(async (res: Guild) => {
+            //@ts-ignore-error
+            const adminsChannel = res.channels.cache.find((channel1: GuildBasedChannel) => channel1.id === CHANNELS_IDS['adminsAppliesChannelId']);
+            //@ts-ignore-error
+            const publicChannel = res.channels.cache.find((channel2: GuildBasedChannel) => channel2.id === CHANNELS_IDS['publicAppliesChannelId']);
+
+            if(!adminsChannel || !publicChannel)
+                console.warn(new Date().toLocaleString() + ' - Failed to parse guild\'s specified in JSON channels! Please, restart bot with correct data!');
+            else
+                console.info(new Date().toLocaleString() + ' - Parsed channels successfully!');
+        });
+    } catch(error) {
+        console.error(error);
+    }
 });
 
 client.on('messageCreate', async message => {
@@ -104,24 +124,21 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
     const applicationsOrder = require('./applies-order.json');
 
-    //@ts-ignore-error
-    const application = applicationsOrder.find(apply => apply['adminsChannelMessageId'] === `${messageId}`)
+    const application = applicationsOrder.find((apply: any) => apply['adminsChannelMessageId'] === `${messageId}`)
     
     if(application) {
         if(reaction.emoji.name === '✅') {
             /*! Re-send it in public channel for criticise.*/
 
             await reaction.message.guild?.channels.fetch(CHANNELS_IDS['publicAppliesChannelId'])
-            //@ts-ignore-error
-            .then(async publicAppliesChannel => {
+            .then(async (publicAppliesChannel: GuildBasedChannel | null) => {
                 const applicationContents = application['applicationContents'];
                 const applicationAuthorsId = application['ticketAuthorsId'];
                 const applicationId = application['ticketHashesId'];
 
                 //@ts-ignore-error
-                await publicAppliesChannel.send({ content: applicationContents})
-                //@ts-ignore-error
-                .then(async publicDomainMessage => {
+                await (publicAppliesChannel as GuildTextBasedChannel).send({ content: applicationContents})
+                .then(async (publicDomainMessage: Message<true>) => {
                     const publicEmbed = new EmbedBuilder()
                                     .setTitle('Application had been published!')
                                     .setDescription(null)
@@ -144,61 +161,55 @@ client.on('messageReactionAdd', async (reaction, user) => {
                                     .setTimestamp();
 
                     await publicDomainMessage.reply({ content: '', embeds: [publicEmbed] })
-                    //@ts-ignore-error
-                    .then(async publicDomainEmbed => {
+                    .then(async (publicDomainEmbed: Message<true>) => {
                         console.info(new Date().toLocaleString() + ` - Published a ticket with any dependent context! Ticket\'s ID is: ${applicationId}`);
 
                         application['isAccepted'] = true;
                         application['publicChannelMessageId'] = `${publicDomainMessage.id}`;
                         application['publicChannelAdditionId'] = `${publicDomainEmbed.id}`;
 
-                        //@ts-ignore-error
-                        let newApplicationOrder = applicationsOrder.filter(object => object['adminsChannelMessageId'] != `${messageId}`);
+                        let newApplicationOrder = applicationsOrder.filter((object: any) => object['adminsChannelMessageId'] != `${messageId}`);
 
                         newApplicationOrder.push(application);
 
                         await fs.writeFile('applies-order.json', JSON.stringify(newApplicationOrder, null, 4));
                     })
-                    //@ts-ignore-error
-                    .catch(error);
+                    .catch(console.error);
                 })
-                //@ts-ignore-error
                 .catch(console.error);
             })
-            //@ts-ignore-error
             .catch(console.error);
         }
         if(reaction.emoji.name === '❎' && application['isAccepted'] == false) {
             const applicationsChannelId = application['ticketChannelsId'];
 
-            //@ts-ignore-error
-            let newApplicationOrder = applicationsOrder.filter(object => object['adminsChannelMessageId'] != `${messageId}`);
+            let newApplicationOrder = applicationsOrder.filter((object: any) => object['adminsChannelMessageId'] != `${messageId}`);
 
             await fs.writeFile('applies-order.json', JSON.stringify(newApplicationOrder, null, 4));
 
             console.info(new Date().toLocaleString() + ` - Deleted a ticket with any dependent context! Ticket\'s ID is: ${application['ticketHashesId']}`);
-            //@ts-ignore-error
-            reaction.message.reply({ content: 'Beginning of the procedure to delete the application channel, JSON context and other leftovers.', ephemeral: true })
-            //@ts-ignore-error
-            .then(async deleteMessage => {
+
+            reaction.message.reply({ content: 'Beginning of the procedure to delete the application channel, JSON context and other leftovers.' })
+            .then(async (deleteMessage: Message<boolean>) => {
                 await delay(5000);
 
                 await reaction.message.delete();
                 await reaction.message.guild?.channels.fetch(applicationsChannelId)
-                //@ts-ignore-error
-                .then(async ticketChannelParsed => {
+                
+                .then(async (ticketChannelParsed: GuildBasedChannel | null) => {
                     ticketChannelParsed?.delete();
 
                     await delay(1500);
 
                     await deleteMessage.delete();
                 })
-                //@ts-ignore-error
-                .catch(error => {
+                .catch((error: Error) => {
                     console.error(error);
                 });
             })
-            .catch(console.error)
+            .catch((error: Error) => {
+                console.error(error);
+            });
         }
     }
 });
@@ -216,7 +227,6 @@ client.on('interactionCreate', async interaction => {
 
     try {
         await command.execute(interaction);
-    //@ts-ignore-error
     } catch(error) {
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
         console.error(error);

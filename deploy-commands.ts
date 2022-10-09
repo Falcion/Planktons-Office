@@ -16,10 +16,11 @@ for(const file of commandFiles) {
     commands.push(command.data.toJSON());
 }
 
-//@ts-ignore-error
-const rest = new REST({ version: '10'}).setToken(process.env.BOT_TOKEN);
+if(process.env.BOT_TOKEN != undefined && process.env.CLIENT_ID != undefined && process.env.GUILD_ID != undefined) {
+    const rest = new REST({ version: '10'}).setToken(process.env.BOT_TOKEN);
 
-//@ts-ignore-error
-rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands })
-    .then(() => console.log('Successfully registered application commands.'))
-    .catch(console.error);
+    //@ts-ignore-error
+    rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands })
+        .then(() => console.log('Successfully registered application commands.'))
+        .catch(console.error);
+}

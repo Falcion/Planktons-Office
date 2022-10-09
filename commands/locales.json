@@ -4,8 +4,8 @@
         "en-US": "Creates a specified channel as ticket where you can start writing an application"
     },
     "INTRO_APPLY": {
-        "ru": "Будьте начеку того факта, что вы запустили процедуру отправки заявки, которая закончится через десять минут и не больше: для дополнительной информации, воспользуйтесь соответствующими кнопками.",
-        "en-US": "Be ensure that you have started an application sending procedure that exceeds at ten minutes and no more: for addition information, press the buttons below."
+        "ru": "Будьте начеку того факта, что вы запустили процедуру отправки заявки, которая закончится через пятнадцать минут и не больше: для дополнительной информации, воспользуйтесь соответствующими кнопками или обратите внимание на описание канала-билетика.",
+        "en-US": "Be ensure that you have started an application sending procedure that exceeds at fifteen minutes and no more: for addition information, press the buttons below or note the description of the ticket channel."
     },
     "BUTTON_INFO": {
         "ru": "**Некоторые правила об оформлении заявки.**\n** **\n**1.** Вы ограничены таймером в пятнадцать минут: ни больше ни меньше.\n**2.** Вы ограничены количеством символов, предусмотренным API Discord, т.е. 2000 символов.\n** **\nПравила будут дополняться и изменяться со временем: проявлятей уважение и терпение!",
