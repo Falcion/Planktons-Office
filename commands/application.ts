@@ -66,11 +66,11 @@ module.exports = {
 
             //@ts-ignore-error
             const buttonHandler = click => click.user.id === interaction.user.id;
-            const interactionButtons = ticketChannel.createMessageComponentCollector({ buttonHandler, time: 10000 });
+            const interactionButtons = ticketChannel.createMessageComponentCollector({ buttonHandler, time: 1000 * 60 * 15 });
 
             //@ts-ignore-error
             const messageFilter = msg => msg.author.id === interaction.user.id;
-            const messageCollector = ticketChannel.createMessageCollector({ messageFilter, time: 10000 });
+            const messageCollector = ticketChannel.createMessageCollector({ messageFilter, time: 1000 * 60 * 15 });
 
             //@ts-ignore-error
             interactionButtons.on('collect', async event => {
