@@ -12,7 +12,7 @@ var delay = ms => new Promise(res => setTimeout(res, ms));
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('application')
-        .setDescription(LOCALES['INIT_APPLY']['ru'])
+        .setDescription(LOCALES['INIT_APPLY']['en-US'])
         .setDescriptionLocalization('en-US', LOCALES['INIT_APPLY']['en-US'])
         .setDescriptionLocalization('en-GB', LOCALES['INIT_APPLY']['en-US'])
         .setDMPermission(false),
@@ -66,11 +66,11 @@ module.exports = {
 
             //@ts-ignore-error
             const buttonHandler = click => click.user.id === interaction.user.id;
-            const interactionButtons = ticketChannel.createMessageComponentCollector({ buttonHandler, time: 8000 });
+            const interactionButtons = ticketChannel.createMessageComponentCollector({ buttonHandler, time: 10000 });
 
             //@ts-ignore-error
             const messageFilter = msg => msg.author.id === interaction.user.id;
-            const messageCollector = ticketChannel.createMessageCollector({ messageFilter, time: 8000 });
+            const messageCollector = ticketChannel.createMessageCollector({ messageFilter, time: 10000 });
 
             //@ts-ignore-error
             interactionButtons.on('collect', async event => {
@@ -94,7 +94,7 @@ module.exports = {
             //@ts-ignore-error
             messageCollector.on('end', async data => {
                 if(data.size == 0 || data == null || data == undefined) {
-                    await ticketChannel.send('You didn\'t send anything in answer at this ticket! You DO realise the consenquences of this category of bot usage: be ensure next time you ready for an application sending procedure, but now, this ticket is going to be deleted in 30s!')
+                    await ticketChannel.send('You didn\'t send anything in answer at this ticket! You DO realise the consenquences of this style of bot usage: be ensure next time you ready for an application sending procedure, but now, this ticket is going to be deleted in half a minute!')
                     //@ts-ignore-error
                     .then(async exceptionMessage => {
                         const messageId = exceptionMessage.channel.id;
@@ -146,13 +146,13 @@ module.exports = {
                     return;
                 }
 
-                await ticketChannel.send({ content: 'Procedure of collecting application\'s context has been ended! Please, wait an answer from administration, and if this ticket will disappear, this means you didn\'t pass the check!', ephemeral: true });
+                await ticketChannel.send({ content: 'Procedure of collecting application\'s context has been ended! Please, wait for an an answer from administration and if this ticket will disappear, this means you didn\'t pass the check!', ephemeral: true });
 
                 interaction.guild.channels.fetch(CHANNELS_IDS['adminsAppliesChannelId'])
                 //@ts-ignore-error
                 .then(async adminAppliesChannel => {
                     const embed = new EmbedBuilder()
-                                    .setTitle('Application had been handled!')
+                                    .setTitle('Application has been handled!')
                                     .setDescription(null)
                                     .setFooter({ text: 'Event handling message: system-purposes only.' })
                                     .setColor(Colors.Green)
@@ -182,8 +182,11 @@ module.exports = {
 
                         const applicationObject = {
                             'adminsChannelMessageId': applyCheckingStatus.id,
+                            'publicChannelMessageId': '',
+                            'publicChannelAdditionId': '',
                             'ticketChannelsId': ticketChannel.id,
                             'ticketAuthorsId': interaction.user.id,
+                            'isAccepted': false,
                             'ticketHashesId': crcHash,
                             'applicationContents': application
                         };

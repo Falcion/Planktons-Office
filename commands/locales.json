@@ -8,8 +8,16 @@
         "en-US": "Be ensure that you have started an application sending procedure that exceeds at ten minutes and no more: for addition information, press the buttons below."
     },
     "BUTTON_INFO": {
-        "ru": "**Некоторые правила об оформлении заявки.**\n** **\n**1.** Вы ограничены таймером в пять минут: ни больше ни меньше.\n**2.** Вы ограничены количеством символов, предусмотренным API Discord, т.е. 2000 символов.\n** **\n Правила будут дополняться и изменяться со временем: проявлятей уважение и терпение!",
-        "en-US": "**Some rules about submissions.**\n** **\n**1.** You are limited to a timer of five minutes: no more, no less.\n**2.** You are limited to the number of characters allowed by the Discord API, which is 2000 characters.\n** **\n Rules will evolve and change over time: show respect and patience!"
+        "ru": "**Некоторые правила об оформлении заявки.**\n** **\n**1.** Вы ограничены таймером в пять минут: ни больше ни меньше.\n**2.** Вы ограничены количеством символов, предусмотренным API Discord, т.е. 2000 символов.\n** **\nПравила будут дополняться и изменяться со временем: проявлятей уважение и терпение!",
+        "en-US": "**Some rules about submissions.**\n** **\n**1.** You are limited to a timer of five minutes: no more, no less.\n**2.** You are limited to the number of characters allowed by the Discord API, which is 2000 characters.\n** **\nRules will evolve and change over time: show respect and patience!"
+    },
+    "DELETE_APPLY": {
+        "ru": "Удаляет всю возможную информацию об заявке пользователя.",
+        "en-US": "Deletes all possible information about user's application."
+    },
+    "DELETE_APPLY_OPTION1": {
+        "ru": "Идентификационный номер заявки пользователья",
+        "en-US": "User's application ID"
     },
     "ERROR_OVERFLOW": {
         "ru": "По неудаче, ваша заявка была отклонена из-за того, что она превысила в итоговом количестве максимальное число символов в размере двух тысяч, перепишите заявку и попробуйте отправить её заново!",

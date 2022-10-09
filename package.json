@@ -4,8 +4,8 @@
   "description": "A self-written bot based on Discord API with TS superset for a quite popular streamer",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "deploy-cmd": "node dist/deploy-commands.js"
+    "start": "ts-node index.ts",
+    "deploy-cmd": "ts-node deploy-commands.ts"
   },
   "repository": {
     "type": "git",

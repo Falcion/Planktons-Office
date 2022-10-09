@@ -12,7 +12,7 @@ var delay = ms => new Promise(res => setTimeout(res, ms));
 if(fs.pathExistsSync('.env') == false) {
     fs.createFileSync('.env');
 
-    const envPattern = 'BOT_TOKEN=\nCLIENT_ID=\nGUILD_ID=';
+    const envPattern = 'BOT_TOKEN=\nDEV_ID=\nCLIENT_ID=\nGUILD_ID=';
 
     fs.writeFileSync('.env', envPattern);
 }
@@ -78,6 +78,16 @@ client.once('ready', () => {
     console.log('Bot is ready!');
 });
 
+client.on('messageCreate', async message => {
+    if(message.author.bot) return;
+
+    if(message.author.id === process.env.DEV_ID) {
+        if(message.content.includes(`<@${process.env.CLIENT_ID}>`)) {
+            await message.reply(`Hello to you too, I am <@${process.env.CLIENT_ID}>! My main purpose is to receive and simple control of applications from users, redirect them to your discretion and then send them for public review!`);
+        }
+    }
+});
+
 client.on('messageReactionAdd', async (reaction, user) => {
     if(reaction.partial) { 
         try { 
@@ -134,8 +144,20 @@ client.on('messageReactionAdd', async (reaction, user) => {
                                     .setTimestamp();
 
                     await publicDomainMessage.reply({ content: '', embeds: [publicEmbed] })
-                    .then(() => {
+                    //@ts-ignore-error
+                    .then(async publicDomainEmbed => {
                         console.info(new Date().toLocaleString() + ` - Published a ticket with any dependent context! Ticket\'s ID is: ${applicationId}`);
+
+                        application['isAccepted'] = true;
+                        application['publicChannelMessageId'] = `${publicDomainMessage.id}`;
+                        application['publicChannelAdditionId'] = `${publicDomainEmbed.id}`;
+
+                        //@ts-ignore-error
+                        let newApplicationOrder = applicationsOrder.filter(object => object['adminsChannelMessageId'] != `${messageId}`);
+
+                        newApplicationOrder.push(application);
+
+                        await fs.writeFile('applies-order.json', JSON.stringify(newApplicationOrder, null, 4));
                     })
                     //@ts-ignore-error
                     .catch(error);
@@ -146,7 +168,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
             //@ts-ignore-error
             .catch(console.error);
         }
-        if(reaction.emoji.name === '❎') {
+        if(reaction.emoji.name === '❎' && application['isAccepted'] == false) {
             const applicationsChannelId = application['ticketChannelsId'];
 
             //@ts-ignore-error
@@ -156,7 +178,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
             console.info(new Date().toLocaleString() + ` - Deleted a ticket with any dependent context! Ticket\'s ID is: ${application['ticketHashesId']}`);
             //@ts-ignore-error
-            reaction.message.reply({ content: 'Removed ticket\'s data, channel and other context! Wait 5s before total annigilation!', ephemeral: true })
+            reaction.message.reply({ content: 'Beginning of the procedure to delete the application channel, JSON context and other leftovers.', ephemeral: true })
             //@ts-ignore-error
             .then(async deleteMessage => {
                 await delay(5000);
