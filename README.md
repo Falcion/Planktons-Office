@@ -51,26 +51,20 @@
 
 ### About the project
 
-This class-library is created to make something in casual programming life a little easier than usual: in different ways and in a different spheres.
+This personally-written bot is created to handle an applications by members in your guild in Discord.
 
-Of course the needs of programmers are changing, so the project is actively accepting applications and ideas for adding codes to simplify daily work.
+It supports "before admin checks" system and JSON-storage for every accepted application: any denied application will be deleted with any related context.
 
-And there is why this project exists:
-
-<!-- Reasons of project existing: may be useless but steel needed. -->
-
-- A time of programmer should be focused on creating more interesting solutions: maybe even something like this but in more complicated direction.
-
-- Repeating of the same tasks over and over is boring.
+... current open-source code is under the [sauzzeth](https://www.youtube.com/c/sauzzeth) because he is customer of this bot.
 
 #### Built with
 
 Project built with:
 
-- [Javascript]()
-- [Typescript]()
-- [TSNode]()
-- [Discord.js]()
+- [Javascript](https://www.javascript.com/)
+- [Typescript](https://www.typescriptlang.org/docs/)
+- [TSNode](https://www.npmjs.com/package/ts-node)
+- [Discord.js](https://discordjs.guide/#before-you-begin)
 
 <br />
 <p align="right"><a href="#top" title="Back to the top">↺</a></p>
@@ -83,91 +77,10 @@ Before using this application, read this paragraph so that you wouldn't have unn
 
 #### Prerequisites
 
-<!-- 
-    As it said, project doesn't have any unique dependencies.
-    But user must know at least minimum that he needs to install.
-    As I would call it - informational minimum.
- -->
-
 Before using this application, ensure you met this requirements:
 
-- Initialized .NET project in which you would use this library.
-- Any potential version of VS: or any other IDE with .NET support.
-
-#### Installation
-
-Permission is granted for free use in any of your projects.
-
-Guide for installation of source code of the class-library:
-
-1. Clone the repository with any form of application that supports GIT.
-2. Put this application in your path of project and define its namespace.
-3. Class-library is ready to be used in your project.
-
-<!--
-    "VS" actually is «Visual Studio 2019/2022» including RC versions.
-    Unfortunately, developer doesn't have access to ReSharper, so-
-    there is no context about IDEs like it.
- -->
-Installation through «Nuget» with help of VS:
-
-1. Open project in VS.
-2. In opened project in hotbar find the «Nuget Package Manager» and start to manage extensions.
-3. Write the name of this project in the search bar.
-4. Download the latest stable version through the menu and class-library is ready to be used.
-
-If you use a different IDE from VS, read this article: [using new commands in .NET][STACKOVERFLOW].
-
-[STACKOVERFLOW]: https://stackoverflow.com/questions/40675162/install-a-nuget-package-in-visual-studio-code/
-
-<br />
-<p align="right"><a href="#top" title="Back to the top">↺</a></p>
-
-### Project usage
-
-As it said before — main purpose of this project is to make things easier.
-
-Project currently includes this:
-
-<!--
-    Even like about reasons of project existence:
-    - Project could be useful if you want to learn some functions.
-    - Project doesn't use some hyper intellectual formulas for calculations.
- -->
-- Useful algorithms which could be used even in simplest solutions or codes.
-- Universal converter of units.
-- Rationalization and theoretical math module: probabilities, math functions and etc.
-- Pseudo-random generator of different type objects.
-- Markdown-machine.
-
-If you want to use this project in your own, just install it in and reference it as namespace: nothing special.
-
-<br />
-<p align="right"><a href="#top" title="Back to the top">↺</a></p>
-
-<!--
-    ROADMAP of the project
-        List of potential functions in future versions of project: no garanties
- -->
- 
-### Roadmap
-
-- [x] Implement new graphs algorithms and other algorithms alike DFS.
-- [x] Write a rationalization of expressions module.
-  - [x] Rationalization to strings
-  - [x] Rationalization to values
-- [x] Module about generating random numbers, strings, objects.
-- [x] ... different variation of functions: will be written in future.
-- [x] Publish new version of project.
-- [x] Write a changelog.
-- [ ] Write a "soft-read" documentation.  
-
-For a full list of proposed features and fixes see the: [open issues of repository][OPEN_ISSUES].
-
-[OPEN_ISSUES]: https://github.com/Falcion/Planktons-Office/issues/
-
-<br />
-<p align="right"><a href="#top" title="Back to the top">↺</a></p>
+- Installed all required NPM packages that listed in `package.json`.
+- Discord OAuth client's secret and ID, your personal guild's ID where you will be using this bot and two IDs for admin and public channels.
 
 ### Contributing
 
