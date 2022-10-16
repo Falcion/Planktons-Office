@@ -25,6 +25,20 @@ else {
     dotenv.config();
 }
 
+if(fs.pathExistsSync('sessions-lock.json') == false) {
+    fs.createFile('sessions-lock.json');
+
+    const sessionsPattern: any = {
+        'CURRENT_APPLIES': 0,
+        'NUMBERS_JUDGING': 1,
+        'JUDJES_IDS': [
+            `${process.env.DEV_ID}`
+        ]
+    };
+
+    fs.writeFileSync('sessions-lock.json', JSON.stringify(sessionsPattern, null, 4));
+}
+
 if(fs.pathExistsSync('applies-order.json') == false) {
     fs.createFileSync('applies-order.json');
 
@@ -72,8 +86,8 @@ for(let i = 0; i < commandFiles.length; i++) {
 client.once('ready', () => {
     client.user?.setPresence({
         activities: [{
-            name: 'IN-DEV',
-            //name: 'API',
+            //name: 'IN-DEV',
+            name: 'API',
             type: 5
         }],
         status: 'dnd',
@@ -232,5 +246,27 @@ client.on('interactionCreate', async interaction => {
         console.error(error);
     }
 });
+
+// checking every hour -> on saturday 12:00 and if 
+setInterval(async () => {
+    let dayOftheWeek = new Date().getDay();
+    let timeOftheDay = new Date().getHours();
+
+    // if its saturday and > 12:00
+    if(dayOftheWeek == 6) {
+        const appSettings = require('./app-settings.json');
+
+        appSettings['isClosed'] = true;
+
+        await fs.writeFile('app-settings.json', JSON.stringify(appSettings, null, 4));
+    }
+    else {
+        const appSettings = require('./app-settings.json');
+
+        appSettings['isClosed'] = false;
+
+        await fs.writeFile('app-settings.json', JSON.stringify(appSettings, null, 4));
+    }
+}, 3600000);
 
 client.login(process.env.BOT_TOKEN);

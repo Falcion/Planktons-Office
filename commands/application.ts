@@ -205,6 +205,7 @@ module.exports = {
                                 'isAccepted': false,
                                 'isChecked': false,
                                 'ticketHashesId': crcHash,
+                                'applicationDate': new Date().toLocaleString(),
                                 'applicationContents': application
                             };
     

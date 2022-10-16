@@ -21,8 +21,6 @@
 !*locales*
 !*lang.*
 
-# ESLint
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -401,6 +399,10 @@ FodyWeavers.xsd
 
 # Local History for Visual Studio Code
 .history/
+
+# Typescript output folder
+dist/
+out-tsc/
 
 # Windows Installer files from build outputs
 *.cab

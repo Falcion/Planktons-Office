@@ -6,7 +6,7 @@
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"target": "es6",
-		"outDir": "./dist",
+		"outDir": "out-tsc",
 		"baseUrl": "./",
 		"incremental": true,
 		"moduleResolution": "node",
@@ -14,5 +14,6 @@
 		"strict": true,
 		"sourceMap": false
 	},
-	"exclude": ["node_modules", "dist"]
+	"exclude": ["node_modules", "dist"],
+	"include": ["./commands/*.ts", "./src/**/*.ts"]
 }
