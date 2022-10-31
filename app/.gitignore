@@ -15,6 +15,7 @@
 
 *.env*
 !package.json
+!tsconfig.json
 
 # Languages-specified configurations
 

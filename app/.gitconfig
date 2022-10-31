@@ -99,7 +99,8 @@
     safecrlf = warn
 
     # Launch an editor with specified values.
-    editor = emacsclient -t -a emacs
+    # editor = emacsclient -t -a emacs
+    editor = code --wait
 
 [color]
     ui = true
