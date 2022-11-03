@@ -1,0 +1,31 @@
+[##:
+    "NAME": "Mass refactoring and rewriting process for bot",
+    "VERSION": "1.0.1c",
+    "RELEASE": "tag-v1.0.1c"
+##]:
+
+- Rewrited and implemented entire functionality of bot.
+- Moved app's core to specified same-named folder.
+- Implemented rollup module.
+- Added PrettierRC and ESLint for TS.
+
+[##:
+    "NAME": "Fixed TS ignore abuse and types",
+    "VERSION": "1.0.0-a",
+    "RELEASE": "tag-v1.0.0-a"
+##]:
+
+- Bot read messages not by interaction's author: we deleted filters for collectors and added them in an events.
+- Implemented parser for channels in ready-event for its normal work.
+- Fixed numerous count of types and other little things.
+
+[##:
+    "NAME": "REPO REVECTOR: LOOKING AT TYPESCRIPT",
+    "VERSION": "1.0.0",
+    "RELEASE": "tag-v1.0.0"
+##]:
+
+- REPO REVECTOR: LOOKING AT TYPESCRIPT
+- Refactored and fix GITIGNORE
+- Bot prod version result
+- Fixed timings for apps
