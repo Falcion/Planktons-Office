@@ -16,5 +16,5 @@
 		"sourceMap": false
 	},
 	"exclude": ["node_modules", "dist", "out-tsc"],
-	"include": ["**/*.ts", "/**/*.ts"]
+	"include": ["**/*.ts"]
 }

@@ -11,18 +11,18 @@ import { COMMAND_NAME, COMMAND_DM } from './context/application.ts.json';
 
 /* ======================================================================= */
 
-import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedAuthor, APIEmbedField } from 'discord.js';
+import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedField } from 'discord.js';
 import crc32 from 'crc/crc32';
 
-import * as APP_SETTINGS from './../app-settings.json';
+import * as APP_SETTINGS from '../app-settings.json';
 
-import * as RU_LOCALES from './../data/locales/ru.json';
-import * as EN_LOCALES from './../data/locales/en.json';
+import * as RU_LOCALES from '../data/locales/ru.json';
+import * as EN_LOCALES from '../data/locales/en.json';
 
 import * as fs from 'fs-extra';
 
-import { out, read_json, count, get_time } from './../modules/simplifiers';
-import { gen_embed, gen_button, gen_attach } from './../modules/discord-simplifiers';
+import { out, read_json, count, get_time } from '../modules/simplifiers';
+import { gen_embed, gen_button, gen_attach } from '../modules/discord-simplifiers';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -80,12 +80,10 @@ module.exports = {
                 gen_button('[EN] INFO', 4, 'en_info')
             );
 
-            const msg_array: string[] = [
-                EN_LOCALES['acmsg_1'],
-                EN_LOCALES['acmsg_2'],
-            ];
+            const user_tags: string = '<@' + `${interaction.user.id}` + '>';
+            const msg_param: string = EN_LOCALES['acmsg_1'] + ('\n' + '\n') + EN_LOCALES['acmsg_2'] + ('\n' + '\n') + '— ' + user_tags;
 
-            await APP_CHANNEL.send({ content: msg_array.join('\n') + '** **', components: [row] });
+            await APP_CHANNEL.send({ content: msg_param + '\n' + '** **', components: [row] });
 
             const message_events = APP_CHANNEL.createMessageCollector({ time: 15000 });
             const buttons_events = APP_CHANNEL.createMessageComponentCollector({ time: 15000 });
@@ -133,10 +131,10 @@ module.exports = {
 
                     switch(event_id) {
                         case 'ru_info':
-                            await pressed.reply({ content: RU_LOCALES_ANSWER.join(), ephemeral: true });
+                            await pressed.reply({ content: RU_LOCALES_ANSWER.join('\n'), ephemeral: true });
                             break;
                         case 'en_info':
-                            await pressed.reply({ content: EN_LOCALES_ANSWER.join(), ephemeral: true });
+                            await pressed.reply({ content: EN_LOCALES_ANSWER.join('\n'), ephemeral: true });
                             break;
                         default:
                             throw new Error('Unknown ID of button\'s event!');
@@ -145,27 +143,27 @@ module.exports = {
             });
 
             buttons_events.on('end', async entries => {
-                if(!entries) {
+                if(!entries || entries.size < 1) {
                     out('Buttons were NOT used via application procedure! END of BUTTON_HANDLER.');
 
-                    for(const id of interactive_ids) {
-                        if(count(interactive_events, id) >= 5) {
-                            const ignored_mods: string[] = await read_json('./../data/ignored-mods.json');
-
-                            ignored_mods.push(id);
-
-                            await fs.writeJSON('./../data/ignored-mods.json', ignored_mods);
-                        }
-                    }
-
                     return;
+                }
+
+                for(const id of interactive_ids) {
+                    if(count(interactive_events, id) >= 5) {
+                        const ignored_mods: string[] = await read_json('data/ignored-mods.json');
+
+                        ignored_mods.push(id);
+
+                        await fs.writeJSON('data/ignored-mods.json', ignored_mods);
+                    }
                 }
             });
 
             message_events.on('collect', async message => {
                 out('Handled message in application specified channel-ticket! Message ID: [#' + message.id + '].');
 
-                const banned_ids: string[] = await read_json('./../data/ignored-mods.json');
+                const banned_ids: string[] = await read_json('data/ignored-mods.json');
 
                 if(count(banned_ids, message.author.id) != 0)
                     await message?.delete();
@@ -175,7 +173,7 @@ module.exports = {
             });
 
             message_events.on('end', async shards => {
-                if(!shards) {
+                if(!shards || shards.size < 1) {
                     await interaction.user.send({ content: EN_LOCALES['shnb'] });
 
                     await APP_CHANNEL?.delete();
@@ -242,31 +240,30 @@ module.exports = {
                      */
 
                     case 0:
-                        const AUTHORS_ID = `${interaction.user?.id}`;
+                        const AUTHORS_ID = `<@` + `${interaction.user.id}` + `>`;
                         const CONTEXT_ID = `${session_id}`;
 
-                        const footer: APIEmbedFooter = { text: 'Embed API: system-handling message.', icon_url: `${interaction.user?.avatarURL}` };
-                        const author: APIEmbedAuthor = { name: 'Author of application: [@' + `${interaction.user?.id}]`, icon_url: `${interaction.user?.avatarURL}` };
+                        const footer: APIEmbedFooter = { text: 'Embed API: system-handling message.', icon_url: `${interaction.client.user?.avatarURL()}` };
 
                         const fields: APIEmbedField[] = [
                             { name: "APPLICATION's AUTHOR:", value: AUTHORS_ID },
                             { name: "APPLICATION's ID:", value: CONTEXT_ID },
-                            { name: "APPLICATION's STATUS:", value: `- IS_ACCEPTED: FALSE \n - IS_REVIEWED: FALSE` }
+                            { name: "APPLICATION's STATUS:", value: `- **IS_ACCEPTED:** FALSE \n - **IS_REVIEWED:** FALSE` }
                         ];
                         
-                        const EMBED = gen_embed('Got and parsed an application!', '', footer, fields, 'vivid_pink', author);
+                        const EMBED = gen_embed('Got and parsed an application!', null, footer, fields, 'vivid_pink', interaction.user?.avatarURL(), null);
 
                         const DOMAIN_MESSAGE = await ADMIN_APPLIES_CHANNEL?.send({ content: merged_messages, embeds: [EMBED] });
 
-                        await DOMAIN_MESSAGE.reply('❎');
-                        await DOMAIN_MESSAGE.reply('✅');
+                        await DOMAIN_MESSAGE.react('❎');
+                        await DOMAIN_MESSAGE.react('✅');
 
-                        const applications_array: object[] = await read_json('./../data/applications.json');
+                        const applications_array: object[] = await read_json('data/applications.json');
 
                         const session_time: number = get_time();
 
-                        const APPLICATION = {
-                            'ADMINS_CHANNEL_MESSAGE_ID': `${DOMAIN_MESSAGE}`,
+                        const APPLICATION: object = {
+                            'ADMINS_CHANNEL_MESSAGE_ID': `${DOMAIN_MESSAGE.id}`,
                             'PUBLIC_CHANNEL_MESSAGE_ID': '',
                             'PUBLIC_CHANNEL_CONTEXT_ID': '',
                             'TICKET_CHANNEL_ID': `${APP_CHANNEL.id}`,
@@ -282,7 +279,7 @@ module.exports = {
     
                         applications_array.push(APPLICATION);
     
-                        await fs.writeJSON('./../data/applications.json', applications_array);
+                        await fs.writeJSON('data/applications.json', applications_array);
 
                         out('Written an unchecked application\'s ID in specified JSON!')
                         break;

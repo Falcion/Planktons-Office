@@ -1,7 +1,7 @@
 import { APIEmbedField, ButtonBuilder, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions } from "discord.js";
 
 import * as fs from 'fs-extra';
-import * as discordJS from 'discord.js'
+import * as discordJS from 'discord.js';
 
 const STYLES = discordJS.ButtonStyle;
 
@@ -12,7 +12,7 @@ const STYLES = discordJS.ButtonStyle;
  * variables that cannot be undefined ARE undefined.
  */
 
- export function gen_embed(headers: string, contents: string, footer: EmbedFooterOptions, fields: APIEmbedField[], id_color: number | string, author: EmbedAuthorOptions) {
+ export function gen_embed(headers: string, contents: string | null, footer: EmbedFooterOptions | null, fields: APIEmbedField[], id_color: number | string | null, URLs: string | null, author: EmbedAuthorOptions | null) {
     
     /*
      * Checking some params on undefined.
@@ -20,7 +20,7 @@ const STYLES = discordJS.ButtonStyle;
 
     if(!headers)
         throw new Error('Undefined string throwed into Embeds API!');
-    if(!fields)
+    if(!fields || fields.length < 1)
         throw new Error('Undefined string throwed into Embeds API!');
 
     const ASSIGNED_COLOR = parse_colors(id_color);
@@ -32,6 +32,7 @@ const STYLES = discordJS.ButtonStyle;
                   .addFields(fields)
                   .setDescription(contents)
                   .setColor(ASSIGNED_COLOR)
+                  .setThumbnail(URLs)
                   .setTimestamp();
 
     return embeds;
@@ -91,7 +92,10 @@ export function gen_button(label: string, style: number, id: string) {
  * Link to the Gist of origin of DECIMAL/HEX codes is defined.
  */
 
-export function parse_colors(id: string | number) {
+export function parse_colors(id: string | number | null) {
+
+    if(!id)
+        return 0x000000;
 
     /*
      *  Parsing to decimals of colors into EmbedsAPI.

@@ -1,11 +1,11 @@
 {
   "name": "planktons-office",
-  "version": "1.0.0",
+  "version": "1.0.1c",
   "description": "A self-written bot based on Discord API with TS superset for a quite popular streamer",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node index.ts",
-    "deploy-cmd": "ts-node deploy-commands.ts",
+    "start": "ts-node app/index.ts",
+    "deploy-cmd": "ts-node app/deploy-commands.ts",
     "build": "rimraf dist && tsc && rollup -c rollup.config.js"
   },
   "repository": {
@@ -28,8 +28,11 @@
     "discord.js": "^14.4.0",
     "dotenv": "^16.0.2",
     "fs-extra": "^10.1.0",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
     "rimraf": "^3.0.2",
-    "rollup": "^2.79.1"
+    "rollup": "^2.79.1",
+    "sequelize": "^6.25.3"
   },
   "devDependencies": {
     "@types/diff": "^5.0.2",

@@ -7,7 +7,7 @@ import * as fs from 'fs-extra';
  * just send as an output an object.
  */
 
-export function out(message: string) {
+export function out(message: string | null) {
     console.info(new Date().toLocaleString() + ' - ' + message);
 }
 
@@ -23,7 +23,7 @@ export async function read_json(path: string) {
      * We are not checking on type, because code must do it by itself.
      */
     
-    const data = await fs.readFile(path);
+    const data = await fs.readFile(__dirname + './../' + path);
 
     if(!data)
         throw new Error('Empty either non-existing file!');
@@ -44,11 +44,11 @@ export async function read_json(path: string) {
  */
 
 export function count(array: any[], flag: any) {
-    if(array.length == 0)
-        throw new Error('Count function got an error with undefined array!');
-
-    if(typeof(array[0]) !== typeof(flag))
-        throw new Error('Flag and array has different types in first!');
+    
+    /*
+     * We are not checking on types and other, because filter does it by itself
+     * and when it got undefined array, it gets parsed by is-good function.
+     */
 
     const tagged_array = array.filter(x => x === flag);
 

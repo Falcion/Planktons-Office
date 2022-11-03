@@ -15,6 +15,7 @@
 
 *.env*
 !package.json
+!package-lock.json
 !tsconfig.json
 
 # Languages-specified configurations
@@ -71,8 +72,6 @@ BenchmarkDotNet.Artifacts/
 
 # .NET Core
 project.lock.json
-# Default VS doesn't include a package-lock.json (which is strange but OK)
-package-lock.json
 project.fragment.lock.json
 artifacts/
 

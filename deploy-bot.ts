@@ -1,108 +1,13 @@
-import { Client, Collection, Partials, GatewayIntentBits, APIEmbedField, APIEmbedFooter, APIEmbedAuthor } from 'discord.js';
+import { Client, Collection, Partials, GatewayIntentBits, APIEmbedField, APIEmbedFooter } from 'discord.js';
 
 import * as fs from 'fs-extra';
-import * as readerENV from 'dotenv';
 
 import { out, read_json } from './modules/simplifiers';
 import { gen_embed } from './modules/discord-simplifiers';
 
-/*
- * Fixing an TS type error: object of commands declare in client's object.
- */
+import APPLICATION_JSON from './commands/context/application.ts.json';
 
-declare module 'discord.js' {
-    export interface Client {
-      commands: Collection<unknown, unknown>
-    }
-}
-
-(async () => {
-    /*
-     * We are checking every configuration file on its existing and other
-     * JSON-alike context, like, is data typed into or is it in correct format.
-     * 
-     * ENV config is parsed once at bot's client process, so we can require it direct
-     * in code string.
-     */
-
-    if (await fs.pathExists('.env') == false) {
-        fs.createFileSync('.env');
-
-        const environment_pattern: string[] = [
-            '# ID of a developer\'s server either on which bot will work locally.',
-            'GUILDS_ID=',
-            '# ID of a bot\'s client.',
-            'CLIENT_ID=',
-            '',
-            'BOT_TOKEN='
-
-        ];
-
-        fs.writeFileSync('.env', environment_pattern.join('\n'));
-
-        out('Created an ENV configuration file! Ensure typing required context in it!');
-    }
-
-    if (await fs.pathExists('app-settings.json') == false) {
-        await fs.createFile('app-settings.json');
-
-        const settings_pattern: object = {
-            "PUBLIC_APPLIES_CHANNEL_ID": "-1",
-            "ADMINS_APPLIES_CHANNEL_ID": "-1",
-            "JUDGES_APPLIES_CHANNEL_ID": "-1",
-            "APPLICATIONS_MAX": "50",
-            "APPLICATIONS_CUR": "0",
-            "APPLICATIONS_BAN": false
-        };
-
-        /*
-         * Here we are using JSON's stringify because host of the bot needs to type data in it.
-         * So, for better formattings and better readability we use pattern for this string.
-         * 
-         * Also, keep in mind, that JSON shuffles the structure of given JSON object by bytes:
-         * in kinda strange way, you can say that writing direct JSON sorts given object (array).
-         */
-
-        await fs.writeFile('app-settings.json', JSON.stringify(settings_pattern, undefined, 4));
-
-        out('Created an JSON representation of basic settings and context via bot\'s functionality!');
-    }
-
-    if (await fs.pathExists('data/ignored-mods.json') == false) {
-        await fs.createFile('data/ignored-mods.json');
-
-        /*
-         * JSON of an applications is dynamic and nullable: it gets information
-         * from user's input and so, its just an array at the start.
-         */
-
-        await fs.writeFile('data/ignored-mods.json', JSON.stringify([]));
-    }
-
-    if (await fs.pathExists('data/applications.json') == false) {
-        await fs.createFile('data/applications.json');
-
-        /*
-         * JSON of an applications is dynamic and nullable: it gets information
-         * from user's input and so, its just an array at the start.
-         */
-
-        await fs.writeFile('data/applications.json', JSON.stringify([]));
-    }
-
-    if (await fs.pathExists('data/judges-array.json') == false) {
-        await fs.createFile('data/judges-array.json');
-
-        /*
-         * JSON of judges list is dynamic and nullable: it gets information
-         * from dev's input and so, its just an array at the start.
-         */
-
-        await fs.writeFile('data/judges-array.json', JSON.stringify([]));
-    }
-
-    readerENV.config();
-
+export function init() {
     const client = new Client({
         partials: [
             Partials.Channel,
@@ -162,7 +67,7 @@ declare module 'discord.js' {
         ];
     
         for(const setting of array_of_settings)
-            if(!setting)
+            if (typeof(setting) == 'undefined')
                 throw new Error('JSON settings of bot\'s process are undefined!');
     
         /*
@@ -173,7 +78,7 @@ declare module 'discord.js' {
         const ADMINS_CHANNEL_ID = APP_SETTINGS['ADMINS_APPLIES_CHANNEL_ID'];
         const JUDGES_CHANNEL_ID = APP_SETTINGS['JUDGES_APPLIES_CHANNEL_ID'];
     
-        client.guilds.fetch(`${process.env.GUILD_ID}`)
+        client.guilds.fetch(`${process.env.GUILDS_ID}`)
         .then(res => {
             if (!res.channels.cache.find(PUBLIC_CHANNEL => PUBLIC_CHANNEL.id === PUBLIC_CHANNEL_ID) ||
                 !res.channels.cache.find(ADMINS_CHANNEL => ADMINS_CHANNEL.id === ADMINS_CHANNEL_ID) ||
@@ -210,6 +115,10 @@ declare module 'discord.js' {
         }
     
         if(user.bot) return;
+
+        const APP_SETTINGS = await read_json('./app-settings.json');
+
+        if(reaction.message.channel.id !== APP_SETTINGS['ADMINS_APPLIES_CHANNEL_ID']) return;
     
         const message_id = reaction.message.id;
     
@@ -218,8 +127,7 @@ declare module 'discord.js' {
         const application = applications_array.find(object => object['ADMINS_CHANNEL_MESSAGE_ID'] === message_id);
     
         if(application) {
-            const APP_SETTINGS = await read_json('./app-settings.json');
-    
+
             /*
              * APPLICATION ACCEPTED.
              =======================
@@ -244,12 +152,9 @@ declare module 'discord.js' {
     
                     APP_SETTINGS['APPLICATIONS_CUR'] += 1;
     
-                    /*
-                     * Keep in mind, that JSON shuffles the structure of given JSON object by bytes:
-                     * in kinda strange way, you can say that writing direct JSON sorts given object (array).
-                     */
-    
-                    await fs.writeJSON('app-settings.json', APP_SETTINGS);
+                    await fs.writeFile('app-settings.json', JSON.stringify(APP_SETTINGS, undefined, 4));
+
+                    const APPLICATION_CONTENT = application['APPLICATION_CONTENT'];
                     
                     /*
                      * We are evoking each possible type of fetched channel, because ID could be
@@ -268,39 +173,39 @@ declare module 'discord.js' {
                          */
     
                         case 0:
-                            await (PUBLIC_CHANNEL)?.send({ content: '' })
+                            await (PUBLIC_CHANNEL)?.send({ content: APPLICATION_CONTENT })
                             .then(async PUBLIC_MESSAGE => {
                                 out('Bot resent the application\'s data successfully! Application ID: ' + application['TICKET_CONTEXT_ID']);
-    
-                                const AUTHORS_ID = application['TICKET_AUTHORS_ID'];
+                                
+                                application['STATUSES']['IS_ACCEPTED'] = true;
+
+                                const AUTHORS_ID = `<@` + `${application['TICKET_AUTHORS_ID']}` + `>`;
                                 const CONTEXT_ID = application['TICKET_CONTEXT_ID'];
                                 const STATUSES = application['STATUSES'];
 
-                                const footer: APIEmbedFooter = { text: 'Embed API: system-handling message.', icon_url: `${client.user?.avatarURL}` };
-                                const author: APIEmbedAuthor = { name: 'Author of application: [@' + `${user?.id}]`, icon_url: `${user?.avatarURL}` };
+                                const footer: APIEmbedFooter = { text: 'Embed API: system-handling message.', icon_url: `${client.user?.avatarURL()}` };
     
                                 const fields: APIEmbedField[] = [
                                     { name: "APPLICATION's AUTHOR:", value: AUTHORS_ID },
                                     { name: "APPLICATION's ID:", value: CONTEXT_ID },
-                                    { name: "APPLICATION's STATUS:", value: `- IS_ACCEPTED: ${STATUSES['IS_ACCEPTED'] ? 'TRUE' : 'FALSE'} \n - IS_REVIEWED: ${STATUSES['IS_REVIEWED'] ? 'TRUE' : 'FALSE'}` }
+                                    { name: "APPLICATION's STATUS:", value: `- **IS_ACCEPTED:** ${STATUSES['IS_ACCEPTED'] ? 'TRUE' : 'FALSE'} \n - **IS_REVIEWED:** ${STATUSES['IS_REVIEWED'] ? 'TRUE' : 'FALSE'}` }
                                 ];
     
-                                const embed = gen_embed('Got an application.', '', footer, fields, 'vivid_pink', author);
+                                const embed = gen_embed('Got an application.', null, footer, fields, 'vivid_pink', user?.avatarURL(), null);
     
                                 await PUBLIC_MESSAGE.reply({ content: '', embeds: [embed] })
                                 .then(async PUBLIC_CONTEXT => {
-                                    const new_applications = applications_array.filter(object => object['ADMINS_CHANNEL_MESSAGE_ID'] !== message_id);
-    
-                                    application['STATUSES']['IS_ACCEPTED'] = true;
                                     application['PUBLIC_CHANNEL_MESSAGE_ID'] = PUBLIC_MESSAGE.id;
                                     application['PUBLIC_CHANNEL_CONTEXT_ID'] = PUBLIC_CONTEXT.id;
+
+                                    const new_applications = applications_array.filter(object => object['ADMINS_CHANNEL_MESSAGE_ID'] !== message_id);
     
                                     new_applications.push(application);
     
                                     /*
-                                    * Keep in mind, that JSON shuffles the structure of given JSON object by bytes:
-                                    * in kinda strange way, you can say that writing direct JSON sorts given object (array).
-                                    */
+                                     * Keep in mind, that JSON shuffles the structure of given JSON object by bytes:
+                                     * in kinda strange way, you can say that writing direct JSON sorts given object (array).
+                                     */
     
                                     await fs.writeJSON('./data/applications.json', new_applications);
                                 })
@@ -383,6 +288,22 @@ declare module 'discord.js' {
         if(!interaction.isChatInputCommand() || !interaction.isButton) return;
     
         const command_name = interaction.commandName;
+
+        if(command_name === APPLICATION_JSON.COMMAND_NAME) {
+            const APP_SETTINGS = await read_json('./app-settings.json');
+
+            if(APP_SETTINGS['APPLICATIONS_BAN']) {
+                await interaction.reply('Unfortunately, bot currently doesn\'t accept any applications, so please, wait when new week starts and send it again!');
+
+                return;
+            }
+
+            if(APP_SETTINGS['APPLICATIONS_CUR'] >= APP_SETTINGS['APPLICATIONS_MAX']) {
+                await interaction.reply('Unfortunately, server met the maximum amount of currently accepted applications: please, wait until new week and sent it again!');
+
+                return;
+            }
+        }
     
         const command: any = interaction.client.commands.get(command_name);
     
@@ -398,4 +319,4 @@ declare module 'discord.js' {
     });
     
     client.login(process.env.BOT_TOKEN);
-})();
+}
