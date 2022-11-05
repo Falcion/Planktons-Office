@@ -7,7 +7,7 @@ import * as fs from 'fs-extra';
  * just send as an output an object.
  */
 
-export function out(message: string | null) {
+export function out(message: string) {
     console.info(new Date().toLocaleString() + ' - ' + message);
 }
 

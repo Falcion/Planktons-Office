@@ -302,6 +302,6 @@ module.exports = {
         })
         .catch((error: Error) => {
             console.error(error);
-        })
+        });
     }
 }

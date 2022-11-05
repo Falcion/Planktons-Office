@@ -47,7 +47,7 @@ declare module 'discord.js' {
             'DATABASE_HOST=',
         ];
 
-        fs.writeFileSync('.env', environment_pattern.join('\n'));
+        await fs.writeFile('.env', environment_pattern.join('\n'));
 
         out('Created an ENV configuration file! Ensure typing required context in it and don\'t forget to setup the prisma!');
 
@@ -55,7 +55,7 @@ declare module 'discord.js' {
     }
 
     if (await fs.pathExists('./database/applications.db') == false) {
-        out('There is no any APPLICATIONS database! Please, use SQLite engine and setup it!');
+        out('There is no any APPLICATIONS database! Please, use SQLite engine with prisma schemas and setup it!');
 
         return;
     }
@@ -206,9 +206,50 @@ declare module 'discord.js' {
     
         out('Bot is ready to work!');
     });
-    
-    /*
-     * EVENT HANDLER: reactions handling function.
+
+    /* INTERVALIZED MODULE: blocking bot's functions on weekends.
+     ------------------------------------------------------------
+     * Bot already must accept any applications anytime, but so admins and judges must do:
+     * so bot will take some time-schedule about pausing its functionality.
+     * 
+     * Bot will check weekend days every twelve hours (or in seconds): 43,200,000 in defined.
+     */
+
+    setInterval(async () => {
+
+        /*
+         * Entering and using array of days of week for better visual and more comforting code.
+         */
+
+        const weekdays = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ];
+
+        const day = weekdays[new Date().getDay()];
+
+        const APP_SETTINGS = await read_json('./app-settings.json');
+
+        switch(day) {
+            case 'sunday':
+                out('Parsed day with ID of ["SUNDAY"]: this is a curfew day! From now, bot will disable all of its functionality!');
+                
+                APP_SETTINGS['APPLICATIONS_BAN'] = true;
+                break;
+            case 'saturday':
+                out('Parsed day with ID of ["SATURDAY"]: this is a curfew day! From now, bot will disable all of its functionality!');
+
+                APP_SETTINGS['APPLICATIONS_BAN'] = true;
+                break;
+            default:
+                out('Parsed day with ID non-of weekends, so there is procedure of unblocking started!');
+
+                APP_SETTINGS['APPLICATIONS_BAN'] = false;
+                break;
+        }
+
+        await fs.writeFile('./app-settings.json', JSON.stringify(APP_SETTINGS, undefined, 4));
+
+    }, 43200000);
+
+     /* EVENT HANDLER: reactions handling function.
      ---------------------------------------------
      * Via main task of this bot, it needs to read any reaction that happens on specified server
      * for functions of administration by administration: which means what it means.
@@ -411,7 +452,7 @@ declare module 'discord.js' {
             const APP_SETTINGS = await read_json('./app-settings.json');
 
             if(APP_SETTINGS['APPLICATIONS_BAN']) {
-                await interaction.reply('Unfortunately, bot currently doesn\'t accept any applications, so please, wait when new week starts and send it again!');
+                await interaction.reply('Unfortunately, bot currently doesn\'t accept any applications because of curfew, so please, wait when new week starts and send it again!');
 
                 return;
             }

@@ -18,6 +18,8 @@
 !package-lock.json
 !tsconfig.json
 
+!**/commands/context/*.ts.json
+
 # Languages-specified configurations
 
 !*locales*
@@ -27,6 +29,9 @@
 
 */database/prisma/database/
 */database/prisma/migrations/*_init/
+*.sql
+**/prisma/database/applications.db
+**/prisma/database/applications.db-journal
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
