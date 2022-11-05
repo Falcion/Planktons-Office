@@ -11,5 +11,5 @@ module.exports = {
       "@typescript-eslint/no-non-null-assertion": "off",
       "no-case-declarations": "off"
     },
-    "ignorePatterns": [".eslintrc.cjs"]
+    "ignorePatterns": [".eslintrc.cjs", "**/database/**/*.js", "**/database/**/*.ts"]
   };

@@ -23,6 +23,11 @@
 !*locales*
 !*lang.*
 
+# Prisma.js migrations
+
+*/database/prisma/database/*
+*/database/prisma/migrations/*_init/*
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

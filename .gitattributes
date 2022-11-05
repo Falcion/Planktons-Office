@@ -50,6 +50,9 @@
 *.xml             text
 *.xhtml           text diff=html
 
+# Prisma.io
+*.prisma          text diff=prisma
+
 # Docker
 Dockerfile        text
 
