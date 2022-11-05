@@ -25,6 +25,8 @@
 !*locales*
 !*lang.*
 
+!**/locales/*
+
 # Prisma.js migrations
 
 */database/prisma/database/
