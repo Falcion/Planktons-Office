@@ -128,7 +128,7 @@ declare module 'discord.js' {
 
     client.commands = new Collection();
 
-    const commands_path = `${__dirname}` + `/commands`;
+    const commands_path = `${__dirname}` + `/` + `commands`;
     const command_files = fs.readdirSync(commands_path).filter(file => file.endsWith('.ts'));
 
     for(let i = 0; i < command_files.length; i++) {

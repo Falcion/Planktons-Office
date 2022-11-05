@@ -11,12 +11,14 @@ import { COMMAND_NAME, COMMAND_DM } from './context/application.ts.json';
 
 /* ======================================================================= */
 
-import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedField, ButtonInteraction } from 'discord.js';
+import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedField, ButtonInteraction, ComponentType } from 'discord.js';
 import { PrismaClient } from '@prisma/client';
 
 import crc32 from 'crc/crc32';
 
 import * as APP_SETTINGS from '../app-settings.json';
+
+import { STYLES, COMPONENTS } from '../modules/discord-simplifiers';
 
 import * as RU_LOCALES from '../data/locales/ru.json';
 import * as EN_LOCALES from '../data/locales/en.json';
@@ -87,8 +89,17 @@ module.exports = {
 
             await APP_CHANNEL.send({ content: msg_param + '\n' + '** **', components: [row] });
 
+            /*
+             * Parsing to components types for better formatting.
+             ====================================================
+             * For addition context about components types, read the docs via specified link.
+             * For even more information, go on the guide of.
+             *
+             * Docs: https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType/
+             */
+
             const message_events = APP_CHANNEL.createMessageCollector({ time: 15000 });
-            const buttons_events = APP_CHANNEL.createMessageComponentCollector({ time: 15000 });
+            const buttons_events = APP_CHANNEL.createMessageComponentCollector({ time: 15000, componentType: COMPONENTS.Button });
 
             const interactive_ids: Set<string> = new Set<string>();
             const interactive_events: string[] = [];

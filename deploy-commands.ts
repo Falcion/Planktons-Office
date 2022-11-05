@@ -10,8 +10,10 @@ import { Routes } from 'discord.js';
 
     const command_files = fs.readdirSync(commands_path).filter(file => file.endsWith('.ts')); 
 
+    console.log(command_files);
+
     for(const file of command_files) {
-        const file_path = commands_path + `${file}`;
+        const file_path = commands_path + `/` + `${file}`;
 
         const commandJS = await import(file_path);
 

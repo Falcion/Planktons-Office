@@ -1,9 +1,12 @@
-import { APIEmbedField, ButtonBuilder, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions } from "discord.js";
+import { APIEmbedField, ButtonBuilder, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions, ComponentType } from "discord.js";
 
 import * as fs from 'fs-extra';
 import * as discordJS from 'discord.js';
 
-const STYLES = discordJS.ButtonStyle;
+import { out } from '../modules/simplifiers';
+
+export const STYLES = discordJS.ButtonStyle;
+export const COMPONENTS = discordJS.ComponentType;
 
 /*
  * Function of generation an embeds row for better code readability and re-usage:
@@ -12,7 +15,7 @@ const STYLES = discordJS.ButtonStyle;
  * variables that cannot be undefined ARE undefined.
  */
 
- export function gen_embed(headers: string, contents: string | null, footer: EmbedFooterOptions | null, fields: APIEmbedField[], id_color: number | string | null, URLs: string | null, author: EmbedAuthorOptions | null) {
+ export function gen_embed(headers: string, contents: string | null, footer: EmbedFooterOptions | null, fields: APIEmbedField[], id_color: number | string, URLs: string | null, author: EmbedAuthorOptions | null) {
     
     /*
      * Checking some params on undefined.
@@ -92,7 +95,7 @@ export function gen_button(label: string, style: number, id: string) {
  * Link to the Gist of origin of DECIMAL/HEX codes is defined.
  */
 
-export function parse_colors(id: string | number | null) {
+export function parse_colors(id: string | number) {
 
     if(!id)
         return 0x000000;

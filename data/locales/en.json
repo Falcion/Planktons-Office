@@ -10,5 +10,7 @@
     "infmsg_4": "3. If you see that the administration or an outside user violates the privacy of this channel, then do not write anything and take screenshots of these violations.",
     "shnb": "You didn't send anything in answer at this ticket! You DO realise the consenquences of this style of bot usage: be ensure next time you ready for an application sending procedure, but now, this ticket is going to be deleted!",
     "acmsg_end": "Procedure of collecting application's context has been ended!",
-    "exoverf": "Unfortunately, your application had been declined due fact, that in the end its count of chars was bigger than accepted limits, otherwise, more than two thousand, rewrite application and try to send it again!"
+    "exoverf": "Unfortunately, your application had been declined due fact, that in the end its count of chars was bigger than accepted limits, otherwise, more than two thousand, rewrite application and try to send it again!",
+    "resapcmd01": "EN_PLACEHOLDER",
+    "resapcmd02": "EN_PLACEHOLDER"
 }
