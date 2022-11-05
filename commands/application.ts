@@ -11,7 +11,9 @@ import { COMMAND_NAME, COMMAND_DM } from './context/application.ts.json';
 
 /* ======================================================================= */
 
-import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedField } from 'discord.js';
+import { ActionRowBuilder, CacheType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, APIEmbedFooter, APIEmbedField, ButtonInteraction } from 'discord.js';
+import { PrismaClient } from '@prisma/client';
+
 import crc32 from 'crc/crc32';
 
 import * as APP_SETTINGS from '../app-settings.json';
@@ -240,6 +242,8 @@ module.exports = {
                      */
 
                     case 0:
+                        const prisma = new PrismaClient();
+
                         const AUTHORS_ID = `<@` + `${interaction.user.id}` + `>`;
                         const CONTEXT_ID = `${session_id}`;
 
@@ -258,28 +262,22 @@ module.exports = {
                         await DOMAIN_MESSAGE.react('❎');
                         await DOMAIN_MESSAGE.react('✅');
 
-                        const applications_array: object[] = await read_json('data/applications.json');
+                            const session_time: number = get_time();
 
-                        const session_time: number = get_time();
-
-                        const APPLICATION: object = {
-                            'ADMINS_CHANNEL_MESSAGE_ID': `${DOMAIN_MESSAGE.id}`,
-                            'PUBLIC_CHANNEL_MESSAGE_ID': '',
-                            'PUBLIC_CHANNEL_CONTEXT_ID': '',
-                            'TICKET_CHANNEL_ID': `${APP_CHANNEL.id}`,
-                            'TICKET_CONTEXT_ID': `${session_id}`,
-                            'TICKET_AUTHORS_ID': `${interaction.user.id}`,
-                            'STATUSES': {
-                                'IS_ACCEPTED': false,
-                                'IS_REVIEWED': false,
-                            },
-                            'APPLICATION_DATE': `${session_time}`,
-                            'APPLICATION_CONTENT': `${merged_messages}`,
-                        };
-    
-                        applications_array.push(APPLICATION);
-    
-                        await fs.writeJSON('data/applications.json', applications_array);
+                        await prisma.queries.create({
+                            data: {
+                                ADMINS_CHANNEL_MESSAGE_ID: `${DOMAIN_MESSAGE.id}`,
+                                PUBLIC_CHANNEL_MESSAGE_ID: ``,
+                                PUBLIC_CHANNEL_CONTEXT_ID: ``,
+                                TICKET_CHANNEL_ID: `${APP_CHANNEL.id}`,
+                                TICKET_CONTEXT_ID: `${session_id}`,
+                                TICKET_AUTHORS_ID: `${interaction.user.id}`,
+                                IS_ACCEPTED: false,
+                                IS_REVIEWED: false,
+                                APPLICATION_TIMESET: `${session_time}`,
+                                APPLICATION_CONTENT: `${merged_messages}`,
+                            }
+                        });
 
                         out('Written an unchecked application\'s ID in specified JSON!')
                         break;
