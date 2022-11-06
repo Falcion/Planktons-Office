@@ -273,7 +273,7 @@ module.exports = {
                         await DOMAIN_MESSAGE.react('❎');
                         await DOMAIN_MESSAGE.react('✅');
 
-                            const session_time: number = get_time();
+                        const session_time: number = get_time();
 
                         await prisma.queries.create({
                             data: {

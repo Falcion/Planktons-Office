@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 # User-specific files
+
 *.json
 *.rsuser
 *.suo
@@ -27,13 +28,12 @@
 
 !**/locales/*
 
-# Prisma.js migrations
+# Prisma.js migrations and database
 
-*/database/prisma/database/
-*/database/prisma/migrations/*_init/
-*.sql
-**/prisma/database/applications.db
-**/prisma/database/applications.db-journal
+database/
+database/applications.db
+!schema.prisma
+!migration_lock.toml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
