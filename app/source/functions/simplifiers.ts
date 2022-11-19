@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 
-import { error, info, warn } from 'console';
+import { error, info } from 'console';
 
 /*
  * Function of an custom output with date UTC timings and date:

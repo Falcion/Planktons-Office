@@ -76,9 +76,7 @@ Generated\ Files/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
-# Prisma migrations
-database/
-!database/applications.db
+# Preparations for Prisma.io patterns and databases
 
-!schema.prisma
-!migration_lock.toml
+database/prisma/database/*
+database/prisma/migrations/*_init/*
