@@ -51,11 +51,11 @@
         <a href="https://github.com/Falcion/Planktons-Office/wiki/"><strong>«Explore the docs»</strong></a>
         <br />
         <br />
-        <a href="https://github.com/othneildrew/Best-README-Template/tags/">Privacy Policy</a>
+        <a href="https://github.com/Falcion/Planktons-Office/issues">Bug report</a>
         /
-        <a href="https://github.com/othneildrew/Best-README-Template/issues">Bug report</a>
+        <a href="https://github.com/Falcion/Planktons-Office/blob/default/docs/privacy-policy.md">Confidential Policy</a>
         /
-        <a href="https://github.com/othneildrew/Best-README-Template/issues">Feature request</a>
+        <a href="https://github.com/Falcion/Planktons-Office/issues">Feature request</a>
     </p>
 </div>
 
