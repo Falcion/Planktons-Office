@@ -40,7 +40,7 @@
     "pg-hstore": "^2.3.4",
     "rimraf": "^3.0.2",
     "rollup": "^3.3.0",
-    "sqlite3": "^5.1.2"
+    "sqlite3": "^5.1.5"
   },
   "devDependencies": {
     "@types/diff": "^5.0.2",
