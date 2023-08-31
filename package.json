@@ -1,0 +1,74 @@
+{
+  "name": "empfang",
+  "version": "1.0.0",
+  "description": "A specially-deployed Discord™ bot for analyzing and working with online application with database for your servers.",
+  "main": "main.ts",
+  "scripts": {
+    "bot:start": "ts-node source/main.ts",
+    "bot:deploy": "ts-node source/api.ts",
+    "prisma:init": "prisma init --datasource-provider sqlite",
+    "prisma:migrate": "npx prisma migrate devdata --name init",
+    "prepare:husky": "husky install",
+    "prepare:python": "cd scripts && py -m venv venv",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eschatoin/Gnlosizs.git"
+  },
+  "keywords": [
+    "discord",
+    "discord-bot",
+    "discord.js",
+    "database",
+    "data",
+    "data-storage"
+  ],
+  "author": "Falcion",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Eschatoin/Gnlosizs/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "sh .husky/pre-commit",
+      "commit-msg": "sh .husky/commit-msg"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
+  },
+  "homepage": "https://github.com/Eschatoin/Gnlosizs#readme",
+  "devDependencies": {
+    "@types/diff": "^5.0.3",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.5.6",
+    "@types/sqlite3": "^3.1.8",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "eslint": "^8.48.0",
+    "jsdoc": "^4.0.2",
+    "prettier": "^3.0.2",
+    "python": "^0.0.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^2.0.1",
+    "@prisma/client": "^5.2.0",
+    "crc": "^4.3.2",
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.1.1",
+    "husky": "^8.0.3",
+    "sqlite3": "^5.1.6"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  }
+}
